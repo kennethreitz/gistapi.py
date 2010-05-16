@@ -23,22 +23,28 @@ class Gists(object):
 	
 	def __str__(self):
 		pass
+	
+	@staticmethod
+	def fetch_by_user(name):
+		_url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
 		
-	def fetch_gists_by_user():
-		pass
+		print simplejson.load(urllib.urlopen(_url))['gists'][0]
+		
+		# return []
 		
 class Gist(object):
 	"""Base Gist Object"""
-	def __init__(self, id):
+	def __init__(self, id=None, json=None):
 		self.id = id
 		self.url = 'http://github.com/{0}'.format(id)
 		self.embed_url = 'http://github.com/{0}.js'.format(id)
+		self.json = json
 	
 	def __getattribute__(self, name):
 		"""Gets attributes, but only if needed"""
 
 		# Only make API call if needed
-		if name in ['description', 'created_at', 'public', 'files', 'repo']: 
+		if name in ['description', 'created_at', 'public', 'files', 'filenames', 'repo']: 
 			if not hasattr(self, '_meta'):
 				self._meta = self._get_meta()
 				# self._meta = self._get_files
@@ -57,18 +63,17 @@ class Gist(object):
 			if key == 'files': setattr(self, 'filenames', value)
 			else: setattr(self, key, value)
 			
-		return True
+		return _meta
 	
 	@property
 	def files(self):
-		
+		"""Fetches gist file contents"""
 		files = {}
 		
 		for fn in self.filenames:
-			uri = 'http://gist.github.com/raw/{0}/{1}'.format(self.id, fn)
-			files[fn] = (urllib.urlopen(uri).read())
+			file_url = 'http://gist.github.com/raw/{0}/{1}'.format(self.id, fn)
+			files[fn] = (urllib.urlopen(file_url).read())
 			
-			# setattr(self, 'filenames', None)
 		return files
 	
 
@@ -80,8 +85,12 @@ class Gist(object):
 # 
 if __name__ == '__main__':
 	
-	gist = Gist(347430)
-	
-	print gist.description
+	gist = Gist('399505')
 	print gist.files
 	
+	# print Gists.fetch_by_user('kennethreitz')
+	# print gist.description
+
+	# print gist.id
+	# print gist.filenames
+	# print gist.files
