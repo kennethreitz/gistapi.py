@@ -11,7 +11,9 @@ Example Usage
     gist = Gist('d4507e882a07ac6f9f92')
     gist.description   # 'Example Gist for gist.py'
     gist.created_at    # '2010/05/16 10:51:15 -0700'
+
     gist.public        # False
+
 	gist.filenames     # ['exampleEmptyFile', 'exampleFile']
 
 	gist.files         # {'exampleFile': 'Example file content.', 'exampleEmptyFile': ''} 
