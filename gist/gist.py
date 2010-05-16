@@ -3,36 +3,30 @@
 
 """
 Gist.py -- A Python wrapper for the Gist API
-(c) 2010 Kenneth Reitz. CC License.
+(c) 2010 Kenneth Reitz. GPLv2 License.
+
+Example usage:
+
+>>> Gist('d4507e882a07ac6f9f92').description
+'42'
+>>> Gist('d4507e882a07ac6f9f92').repo
+'d4507e882a07ac6f9f92'
+>>> Gist('d4507e882a07ac6f9f92').filenames
+['success!']
 """
 
-import simplejson, urllib
+
+import urllib
 from cStringIO import StringIO
 
-__version__ = "$Revision: 68852 $"
+try: import simplejson as json
+except ImportError: import json
+
+__author__ = 'Kenneth Reitz'
+__version__ = ('0', '6', '0')
+__license__ = 'PSFL'
 
 
-class Gists(object):
-	"""Gist API wrapper"""
-	def __init__(self, username=None, token=None):
-		# Token-based Authentication is unnecesary at this point, gist api functionality is still in alpha
-		self._username = username; self._token = token
-	
-	@staticmethod
-	def fetch_by_user(name):
-		_url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
-		
-		# print simplejson.load(urllib.urlopen(_url))['gists'][0]
-		# collection = []
-		# for g in simplejson.load(urllib.urlopen(_url))['gists']:
-			# collection.append(Gist(json=g))
-			
-		return [Gist(json=g) for g in simplejson.load(urllib.urlopen(_url))['gists']]
-			
-		# return collection
-		
-
-		
 class Gist(object):
 	"""Base Gist Object"""
 	def __init__(self, id=None, json=None):
@@ -61,7 +55,7 @@ class Gist(object):
 			setattr(self, 'id', _meta['repo'])
 		else:
 			_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
-			_meta = simplejson.load(urllib.urlopen(_meta_url))['gists'][0]
+			_meta = json.load(urllib.urlopen(_meta_url))['gists'][0]
 		
 		# Get all response properties
 		for key, value in _meta.iteritems(): 
@@ -84,8 +78,25 @@ class Gist(object):
 		return files
 	
 
+class Gists(object):
+	"""Gist API wrapper"""
+	def __init__(self, username=None, token=None):
+		# Token-based Authentication is unnecesary at this point, gist api functionality is still in alpha
+		self._username = username; self._token = token
+
+	@staticmethod
+	def fetch_by_user(name):
+		"""Returns a set of public Gist objects owned by the given GitHub username"""
+
+		_url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
+
+		# Return a list of Gist objects 
+		return [Gist(json=g) for g in json.load(urllib.urlopen(_url))['gists']]
+
+
 if __name__ == '__main__':
-	
+	import doctest
+	doctest.testmod()
 	# gist = Gist('399505')
 	# print gist.id
 	# print gist.description
@@ -97,9 +108,9 @@ if __name__ == '__main__':
 	# print a.id
 	# print a.description
 	# 	
-	for gist in Gists.fetch_by_user('kennethreitz'):
+	# for gist in Gists.fetch_by_user('kennethreitz'):
 		# print gist.id
-		print gist.description
+		# print gist.description/
 		# print gist.files
 
 	# print gist.id
