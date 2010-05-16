@@ -36,7 +36,7 @@ except ImportError: import json
 
 __author__ = 'Kenneth Reitz'
 __version__ = ('0', '6', '1')
-__license__ = 'PSFL'
+__license__ = 'MIT'
 
 
 class Gist(object):
