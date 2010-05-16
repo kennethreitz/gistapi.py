@@ -28,17 +28,23 @@ class Gists(object):
 	def fetch_by_user(name):
 		_url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
 		
-		print simplejson.load(urllib.urlopen(_url))['gists'][0]
+		# print simplejson.load(urllib.urlopen(_url))['gists'][0]
+		
+		return Gist(json=simplejson.load(urllib.urlopen(_url))['gists'][0])
+		
+		# print gist.description
 		
 		# return []
 		
 class Gist(object):
 	"""Base Gist Object"""
 	def __init__(self, id=None, json=None):
-		self.id = id
+		self.id = id; self._json = json
 		self.url = 'http://github.com/{0}'.format(id)
 		self.embed_url = 'http://github.com/{0}.js'.format(id)
-		self.json = json
+		
+		if self._json:
+			self.id = json['repo']
 	
 	def __getattribute__(self, name):
 		"""Gets attributes, but only if needed"""
@@ -53,8 +59,12 @@ class Gist(object):
 
 	def _get_meta(self):
 		"""Fetches Gist metadata"""
-		_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
-		_meta = simplejson.load(urllib.urlopen(_meta_url))['gists'][0]
+		if self._json:
+			_meta = self._json 
+			setattr(self, 'id', _meta['repo'])
+		else:
+			_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
+			_meta = simplejson.load(urllib.urlopen(_meta_url))['gists'][0]
 		
 		# Get all response properties
 		for key, value in _meta.iteritems(): 
@@ -85,10 +95,15 @@ class Gist(object):
 # 
 if __name__ == '__main__':
 	
-	gist = Gist('399505')
-	print gist.files
+	# gist = Gist('399505')
+	# print gist.id
+	# print gist.description
+	# print gist.files 
 	
-	# print Gists.fetch_by_user('kennethreitz')
+	a = Gists.fetch_by_user('kennethreitz')
+	print a.id
+	print a.description
+	print a.id
 	# print gist.description
 
 	# print gist.id
