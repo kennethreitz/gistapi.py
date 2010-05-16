@@ -30,6 +30,16 @@ Example Usage
 	>> Gists.fetch_by_user('kennethreitz')[-1].description  
 	'My .bashrc configuration'
 
+Installation
+------------
+
+	pip install gistapi
+	
+Or, if you must: 
+
+	easy_install gistapi
+	
+
 Roadmap
 -------
 
