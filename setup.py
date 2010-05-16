@@ -14,8 +14,8 @@ if sys.argv[-1] == "publish":
 	publish()
 	sys.exit()
 
-setup(name='gist',
-	  version='0.6.2',
+setup(name='gistapi',
+	  version='0.1.0',
 	  description='Python wrapper for Gist API',
 	  long_description=open('README.mkd').read() + '\n\n' + open('HISTORY.mkd').read(),
 	  author='Kenneth Reitz',
