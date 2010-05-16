@@ -21,7 +21,7 @@ setup(name='gist',
 	  author='Kenneth Reitz',
 	  author_email='me@kennethreitz.com',
 	  url='http://github.com/kennethreitz/gistapi.py',
-	  packages=['gist'],
+	  packages=['gistapi'],
 	  license='MIT',
 	  classifiers = ( 
 		"Development Status :: 4 - Beta",
