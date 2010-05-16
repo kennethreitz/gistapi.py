@@ -44,9 +44,7 @@ class Gist(object):
 	
 	def __init__(self, id=None, json=None):
 		self.id = id; self._json = json
-		self.url = 'http://github.com/{0}'.format(id)
-		self.embed_url = 'http://github.com/{0}.js'.format(id)
-		self.json_url = 'http://github.com/{0}.json'.format(id)
+		
 
 		# Map given repo id to gist id if none exists
 		if self._json: self.id = json['repo']
@@ -72,6 +70,10 @@ class Gist(object):
 			# Fetch Gist metadata
 			_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
 			_meta = json.load(urllib.urlopen(_meta_url))['gists'][0]
+			
+		self.url = 'http://github.com/{0}'.format(id)
+		self.embed_url = 'http://github.com/{0}.js'.format(id)
+		self.json_url = 'http://github.com/{0}.json'.format(id)
 		
 		for key, value in _meta.iteritems(): 
 			
