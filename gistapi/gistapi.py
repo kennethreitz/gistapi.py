@@ -40,7 +40,6 @@ class Gist(object):
 	def __init__(self, id=None, json=None):
 		self.id = id; self._json = json
 		
-
 		# Map given repo id to gist id if none exists
 		if self._json: self.id = json['repo']
 	
