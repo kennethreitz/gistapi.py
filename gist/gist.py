@@ -29,9 +29,7 @@ False
 'My .bashrc configuration'
 """
 
-
 import urllib
-from cStringIO import StringIO
 
 try: import simplejson as json
 except ImportError: import json
@@ -42,28 +40,31 @@ __license__ = 'PSFL'
 
 
 class Gist(object):
-	"""Base Gist Object"""
+	"""Gist Object"""
+	
 	def __init__(self, id=None, json=None):
 		self.id = id; self._json = json
 		self.url = 'http://github.com/{0}'.format(id)
 		self.embed_url = 'http://github.com/{0}.js'.format(id)
-		
-		if self._json:
-			self.id = json['repo']
+		self.json_url = 'http://github.com/{0}.json'.format(id)
+
+		# Map given repo id to gist id if none exists
+		if self._json: self.id = json['repo']
 	
 	def __getattribute__(self, name):
 		"""Gets attributes, but only if needed"""
 
-		# Only make API call if needed
+		# Only make external API calls if needed
 		if name in ['description', 'created_at', 'public', 'files', 'filenames', 'repo']: 
 			if not hasattr(self, '_meta'):
 				self._meta = self._get_meta()
-				# self._meta = self._get_files
 			
 		return object.__getattribute__(self, name)
 
 	def _get_meta(self):
 		"""Fetches Gist metadata"""
+		
+		# Use json data provided if available
 		if self._json:
 			_meta = self._json 
 			setattr(self, 'id', _meta['repo'])
@@ -74,9 +75,12 @@ class Gist(object):
 		# Get all response properties
 		for key, value in _meta.iteritems(): 
 			
-			# Change filename key for object instantiation
-			if key == 'files': setattr(self, 'filenames', value)
-			else: setattr(self, key, value)
+			if key == 'files': 
+				# Remap file key from API
+				setattr(self, 'filenames', value)
+			else:
+				# Attach given to oject
+				setattr(self, key, value)
 			
 		return _meta
 	
