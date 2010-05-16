@@ -1,3 +1,5 @@
+HISTORY.rst
+README.rst
 setup.py
 gistapi/__init__.py
 gistapi/gistapi.py
