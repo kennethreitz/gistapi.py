@@ -5,6 +5,8 @@ History
 ------------------
 
 * PyPi Compatibility Changes
+* Documentation Updates
+* Added DocTests
 
 0.1.0 (2010-05-16)
 ------------------
