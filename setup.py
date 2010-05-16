@@ -17,7 +17,7 @@ if sys.argv[-1] == "publish":
 setup(name='gistapi',
 	  version='0.1.0',
 	  description='Python wrapper for Gist API',
-	  long_description=open('README.mkd').read() + '\n\n' + open('HISTORY.mkd').read(),
+	  long_description=open('README.rst').read() + '\n\n' + open('HISTORY.rst').read(),
 	  author='Kenneth Reitz',
 	  author_email='me@kennethreitz.com',
 	  url='http://github.com/kennethreitz/gistapi.py',
