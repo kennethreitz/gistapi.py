@@ -15,26 +15,23 @@ __version__ = "$Revision: 68852 $"
 class Gists(object):
 	"""Gist API wrapper"""
 	def __init__(self, username=None, token=None):
-		# raise NotImplementedError
+		# Token-based Authentication is unnecesary at this point, gist api functionality is still in alpha
 		self._username = username; self._token = token
-		
-	def __repr__(self):
-		pass
-	
-	def __str__(self):
-		pass
 	
 	@staticmethod
 	def fetch_by_user(name):
 		_url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
 		
 		# print simplejson.load(urllib.urlopen(_url))['gists'][0]
+		# collection = []
+		# for g in simplejson.load(urllib.urlopen(_url))['gists']:
+			# collection.append(Gist(json=g))
+			
+		return [Gist(json=g) for g in simplejson.load(urllib.urlopen(_url))['gists']]
+			
+		# return collection
 		
-		return Gist(json=simplejson.load(urllib.urlopen(_url))['gists'][0])
-		
-		# print gist.description
-		
-		# return []
+
 		
 class Gist(object):
 	"""Base Gist Object"""
@@ -77,7 +74,7 @@ class Gist(object):
 	
 	@property
 	def files(self):
-		"""Fetches gist file contents"""
+		"""Fetches a gists files and stores them in the 'files' property"""
 		files = {}
 		
 		for fn in self.filenames:
@@ -87,12 +84,6 @@ class Gist(object):
 		return files
 	
 
-# class File(object, filename, gist):
-# 	def __init__(self):
-# 		self.filename = filename
-# 		self.url
-# 		
-# 
 if __name__ == '__main__':
 	
 	# gist = Gist('399505')
@@ -100,11 +91,16 @@ if __name__ == '__main__':
 	# print gist.description
 	# print gist.files 
 	
-	a = Gists.fetch_by_user('kennethreitz')
-	print a.id
-	print a.description
-	print a.id
-	# print gist.description
+	# a = Gists.fetch_by_user('kennethreitz')
+	# print a[]
+	# print dir(a)
+	# print a.id
+	# print a.description
+	# 	
+	for gist in Gists.fetch_by_user('kennethreitz'):
+		# print gist.id
+		print gist.description
+		# print gist.files
 
 	# print gist.id
 	# print gist.filenames
