@@ -35,7 +35,7 @@ try: import simplejson as json
 except ImportError: import json
 
 __author__ = 'Kenneth Reitz'
-__version__ = ('0', '6', '0')
+__version__ = ('0', '6', '1')
 __license__ = 'PSFL'
 
 
