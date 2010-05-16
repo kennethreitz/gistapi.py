@@ -9,22 +9,21 @@ Example Usage
 -------------
 	from gistapi import *  
 
-	>> Gist('d4507e882a07ac6f9f92').repo  
-	'd4507e882a07ac6f9f92'
+	>> gist = Gist('d4507e882a07ac6f9f92')
 
-	>> Gist('d4507e882a07ac6f9f92').description  
+	>> gist.description  
 	'Example Gist for gist.py'
 
-	>> Gist('d4507e882a07ac6f9f92').created_at  
+	>> gist.created_at  
 	'2010/05/16 10:51:15 -0700'
 
-	>> Gist('d4507e882a07ac6f9f92').public  
+	>> gist.public  
 	False
 
-	>> Gist('d4507e882a07ac6f9f92').filenames  
+	>> gist.filenames  
 	['exampleEmptyFile', 'exampleFile']
 
-	>> Gist('d4507e882a07ac6f9f92').files  
+	>> gist.files  
 	{'exampleFile': 'Example file content.', 'exampleEmptyFile': ''}  
 
 	>> Gists.fetch_by_user('kennethreitz')[-1].description  
