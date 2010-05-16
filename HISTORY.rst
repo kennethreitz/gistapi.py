@@ -1,6 +1,12 @@
 History
 =======
 
+0.1.2 (2010-05-16)
+------------------
+* URL Generation BugFix
+* Updated versioning
+* Metadata refactoring
+
 0.1.1 (2010-05-16)
 ------------------
 

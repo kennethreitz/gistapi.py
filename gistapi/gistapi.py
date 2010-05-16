@@ -34,11 +34,6 @@ import urllib
 try: import simplejson as json
 except ImportError: import json
 
-__author__ = 'Kenneth Reitz'
-__version__ = ('0', '1', '1')
-__license__ = 'MIT'
-
-
 class Gist(object):
 	"""Gist Object"""
 	
@@ -71,9 +66,9 @@ class Gist(object):
 			_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
 			_meta = json.load(urllib.urlopen(_meta_url))['gists'][0]
 			
-		self.url = 'http://github.com/{0}'.format(id)
-		self.embed_url = 'http://github.com/{0}.js'.format(id)
-		self.json_url = 'http://github.com/{0}.json'.format(id)
+		self.url = 'http://github.com/{0}'.format(self.id)
+		self.embed_url = 'http://github.com/{0}.js'.format(self.id)
+		self.json_url = 'http://github.com/{0}.json'.format(self.id)
 		
 		for key, value in _meta.iteritems(): 
 			

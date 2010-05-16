@@ -3,6 +3,8 @@
 
 import os
 import sys
+import gistapi
+
 
 from distutils.core import setup
 
@@ -15,7 +17,7 @@ if sys.argv[-1] == "publish":
 	sys.exit()
 
 setup(name='gistapi',
-	  version='0.1.1',
+	  version=gistapi.__version__,
 	  description='Python wrapper for Gist API',
 	  long_description=open('README.rst').read() + '\n\n' + open('HISTORY.rst').read(),
 	  author='Kenneth Reitz',
