@@ -3,7 +3,7 @@
 
 """
 GistAPI.py -- A Python wrapper for the Gist API
-(c) 2010 Kenneth Reitz. PSFL License.
+(c) 2010 Kenneth Reitz. MIT License.
 
 Example usage:
 
