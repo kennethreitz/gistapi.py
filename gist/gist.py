@@ -69,17 +69,17 @@ class Gist(object):
 			_meta = self._json 
 			setattr(self, 'id', _meta['repo'])
 		else:
+			# Fetch Gist metadata
 			_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
 			_meta = json.load(urllib.urlopen(_meta_url))['gists'][0]
 		
-		# Get all response properties
 		for key, value in _meta.iteritems(): 
 			
 			if key == 'files': 
 				# Remap file key from API
 				setattr(self, 'filenames', value)
 			else:
-				# Attach given to oject
+				# Attach properties to object
 				setattr(self, key, value)
 			
 		return _meta
@@ -90,6 +90,7 @@ class Gist(object):
 		files = {}
 		
 		for fn in self.filenames:
+			# Grab file contents
 			file_url = 'http://gist.github.com/raw/{0}/{1}'.format(self.id, fn)
 			files[fn] = (urllib.urlopen(file_url).read())
 			
@@ -107,7 +108,7 @@ class Gists(object):
 		"""Returns a set of public Gist objects owned by the given GitHub username"""
 
 		_url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
-
+		
 		# Return a list of Gist objects 
 		return [Gist(json=g) for g in json.load(urllib.urlopen(_url))['gists']]
 
