@@ -1,7 +1,9 @@
 GistAPI.py
 ==========
 
-This is a Python wrapper for GitHub's [Gist API](http://develop.github.com/p/gist.html).
+This is a Python wrapper for GitHub's Gist API.
+
+http://develop.github.com/p/gist.html
 
 
 Roadmap
