@@ -3,16 +3,30 @@
 
 """
 Gist.py -- A Python wrapper for the Gist API
-(c) 2010 Kenneth Reitz. GPLv2 License.
+(c) 2010 Kenneth Reitz. PSFL License.
 
 Example usage:
 
->>> Gist('d4507e882a07ac6f9f92').description
-'42'
 >>> Gist('d4507e882a07ac6f9f92').repo
 'd4507e882a07ac6f9f92'
+
+>>> Gist('d4507e882a07ac6f9f92').description
+'Example Gist for gist.py'
+
+>>> Gist('d4507e882a07ac6f9f92').created_at
+'2010/05/16 10:51:15 -0700'
+
+>>> Gist('d4507e882a07ac6f9f92').public
+False
+
 >>> Gist('d4507e882a07ac6f9f92').filenames
-['success!']
+['exampleEmptyFile', 'exampleFile']
+
+>>> Gist('d4507e882a07ac6f9f92').files
+{'exampleFile': 'Example file content.', 'exampleEmptyFile': ''}
+
+>>> Gists.fetch_by_user('kennethreitz')[-1].description
+'My .bashrc configuration'
 """
 
 
@@ -97,22 +111,4 @@ class Gists(object):
 if __name__ == '__main__':
 	import doctest
 	doctest.testmod()
-	# gist = Gist('399505')
-	# print gist.id
-	# print gist.description
-	# print gist.files 
 	
-	# a = Gists.fetch_by_user('kennethreitz')
-	# print a[]
-	# print dir(a)
-	# print a.id
-	# print a.description
-	# 	
-	# for gist in Gists.fetch_by_user('kennethreitz'):
-		# print gist.id
-		# print gist.description/
-		# print gist.files
-
-	# print gist.id
-	# print gist.filenames
-	# print gist.files
