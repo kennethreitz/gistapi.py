@@ -13,6 +13,7 @@ Example Usage
     gist.created_at    # '2010/05/16 10:51:15 -0700'
     gist.public        # False
 	gist.filenames     # ['exampleEmptyFile', 'exampleFile']
+
 	gist.files         # {'exampleFile': 'Example file content.', 'exampleEmptyFile': ''} 
 
     Gists.fetch_by_user('kennethreitz')[-1].description    # 'My .bashrc configuration'
