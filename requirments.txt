@@ -1,4 +1,1 @@
-PyYAML 
-fabric
-itty
-opster
+simplejson

@@ -1,4 +1,4 @@
-Gist.py
+GistAPI.py
 =======
 
 This is a Python wrapper for GitHub's Gist API.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 import os
 import sys
@@ -14,12 +15,12 @@ if sys.argv[-1] == "publish":
 	sys.exit()
 
 setup(name='gist',
-	  version='0.2.0',
+	  version='0.6.2',
 	  description='Python wrapper for Gist API',
 	  long_description=open('README.mkd').read() + '\n\n' + open('HISTORY.mkd').read(),
 	  author='Kenneth Reitz',
-	  author_email='ping@kennethreitz.com',
-	  url='http://kennethreitz.com/gist.py',
+	  author_email='me@kennethreitz.com',
+	  url='http://github.com/kennethreitz/gist.py',
 	  packages=['gist'],
 	  license='MIT',
 	  classifiers = ( 

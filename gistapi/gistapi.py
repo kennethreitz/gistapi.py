@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 """
-Gist.py -- A Python wrapper for the Gist API
+GistAPI.py -- A Python wrapper for the Gist API
 (c) 2010 Kenneth Reitz. PSFL License.
 
 Example usage:
