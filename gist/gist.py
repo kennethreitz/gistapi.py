@@ -3,7 +3,7 @@
 
 """
 Gist.py -- A Python wrapper for the Gist API
-(c) 2010 Kenneth Reitz. MIT License.
+(c) 2010 Kenneth Reitz. CC License.
 """
 
 import simplejson, urllib
@@ -39,28 +39,49 @@ class Gist(object):
 
 		# Only make API call if needed
 		if name in ['description', 'created_at', 'public', 'files', 'repo']: 
-			if not hasattr(self, '_meta'): self._meta = self._get_meta
+			if not hasattr(self, '_meta'):
+				self._meta = self._get_meta()
+				# self._meta = self._get_files
 			
 		return object.__getattribute__(self, name)
 
-	@property
 	def _get_meta(self):
-		'''Fetches Gist Metadata'''
-		
+		"""Fetches Gist metadata"""
 		_meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
 		_meta = simplejson.load(urllib.urlopen(_meta_url))['gists'][0]
 		
 		# Get all response properties
-		[setattr(self, attr, _meta[attr]) for attr in _meta.iterkeys()]
-
+		for key, value in _meta.iteritems(): 
+			
+			# Change filename key for object instantiation
+			if key == 'files': setattr(self, 'filenames', value)
+			else: setattr(self, key, value)
+			
 		return True
+	
+	@property
+	def files(self):
+		
+		files = {}
+		
+		for fn in self.filenames:
+			uri = 'http://gist.github.com/raw/{0}/{1}'.format(self.id, fn)
+			files[fn] = (urllib.urlopen(uri).read())
+			
+			# setattr(self, 'filenames', None)
+		return files
+	
 
-
+# class File(object, filename, gist):
+# 	def __init__(self):
+# 		self.filename = filename
+# 		self.url
+# 		
+# 
 if __name__ == '__main__':
 	
 	gist = Gist(347430)
 	
-	# print gist.id
 	print gist.description
 	print gist.files
 	
