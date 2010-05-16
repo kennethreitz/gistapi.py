@@ -43,5 +43,6 @@ Roadmap
 	- Delete a Gist
 	- Edit a Gist
 * Possibly use other hacks in the meantime
+	- Gist's New Gist method? (Post to web form?)
 * Possibly add command line gist interface
 
