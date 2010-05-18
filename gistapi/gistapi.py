@@ -34,6 +34,8 @@ import urllib
 try: import simplejson as json
 except ImportError: import json
 
+__all__ = ['Gist', 'Gists']
+
 class Gist(object):
 	"""Gist Object"""
 	
