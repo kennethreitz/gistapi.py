@@ -10,6 +10,9 @@ Example usage:
 >>> Gist('d4507e882a07ac6f9f92').repo
 'd4507e882a07ac6f9f92'
 
+>>> Gist('d4507e882a07ac6f9f92').owner
+'kennethreitz'
+
 >>> Gist('d4507e882a07ac6f9f92').description
 'Example Gist for gist.py'
 
@@ -55,7 +58,7 @@ class Gist(object):
         """Gets attributes, but only if needed"""
 
         # Only make external API calls if needed
-        if name in ['description', 'created_at', 'public', 'files', 'filenames', 'repo']:
+        if name in ['owner', 'description', 'created_at', 'public', 'files', 'filenames', 'repo']:
             if not hasattr(self, '_meta'):
                 self._meta = self._get_meta()
 
