@@ -10,7 +10,7 @@ Example Usage
 
 ::
 
-    from gistapi import *
+    from gistapi import Gist, Gists
 
     gist = Gist('d4507e882a07ac6f9f92')
     gist.description   # 'Example Gist for gist.py'

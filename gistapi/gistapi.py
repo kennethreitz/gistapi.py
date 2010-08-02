@@ -8,28 +8,28 @@ GistAPI.py -- A Python wrapper for the Gist API
 Example usage:
 
 >>> Gist('d4507e882a07ac6f9f92').repo
-u'd4507e882a07ac6f9f92'
+'d4507e882a07ac6f9f92'
 
 >>> Gist('d4507e882a07ac6f9f92').owner
-u'kennethreitz'
+'kennethreitz'
 
 >>> Gist('d4507e882a07ac6f9f92').description
-u'Example Gist for gist.py'
+'Example Gist for gist.py'
 
 >>> Gist('d4507e882a07ac6f9f92').created_at
-u'2010/05/16 10:51:15 -0700'
+'2010/05/16 10:51:15 -0700'
 
 >>> Gist('d4507e882a07ac6f9f92').public
 False
 
 >>> Gist('d4507e882a07ac6f9f92').filenames
-[u'exampleEmptyFile', u'exampleFile']
+['exampleEmptyFile', 'exampleFile']
 
 >>> Gist('d4507e882a07ac6f9f92').files
-{u'exampleFile': 'Example file content.', u'exampleEmptyFile': ''}
+{'exampleFile': 'Example file content.', uexampleEmptyFile': ''}
 
 >>> Gists.fetch_by_user('kennethreitz')[-1].description
-u'My .bashrc configuration'
+'My .bashrc configuration'
 """
 
 
@@ -40,7 +40,6 @@ try:
     import simplejson as json
 except ImportError:
     import json
-
 
 __all__ = ['Gist', 'Gists']
 
@@ -126,4 +125,7 @@ class Gists(object):
 
 if __name__ == '__main__':
     import doctest
+    print('hello')
+    a = 'bob'
+    
     doctest.testmod()
