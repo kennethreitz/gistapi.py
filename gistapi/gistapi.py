@@ -32,7 +32,7 @@ False
 'My .bashrc configuration'
 """
 
-import urllib
+import urllib2
 
 try:
     import simplejson as json
@@ -123,7 +123,7 @@ class Gists(object):
         _url = GIST_JSON % 'gists/%s' % name
 
         # Return a list of Gist objects
-        return [Gist(json=g) for g in json.load(urllib.urlopen(_url))['gists']]
+        return [Gist(json=g) for g in json.load(urllib2.urlopen(_url))['gists']]
 
 
 if __name__ == '__main__':
