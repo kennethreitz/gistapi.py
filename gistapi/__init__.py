@@ -1,6 +1,13 @@
 # encoding: utf-8
 
-from gistapi import *
+"""
+GistAPI.py -- A Python wrapper for GitHub's Gist API
+(c) 2010 Kenneth Reitz. MIT License.
+"""
+
+
+from core import *
+
 
 __author__ = 'Kenneth Reitz'
 __version__ = '0.1.4'

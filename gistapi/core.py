@@ -1,8 +1,7 @@
-### !/usr/bin/env python
 # encoding: utf-8
 
 """
-GistAPI.py -- A Python wrapper for the Gist API
+GistAPI.py -- A Python wrapper for GitHub's Gist API
 (c) 2010 Kenneth Reitz. MIT License.
 
 Example usage:
@@ -16,8 +15,8 @@ u'kennethreitz'
 >>> Gist('d4507e882a07ac6f9f92').description
 u'Example Gist for gist.py'
 
->>> Gist('d4507e882a07ac6f9f92').created_at
-u'2010/05/16 10:51:15 -0700'
+>>> Gist('d4507e882a07ac6f9f92').created_at.isoformat()
+'2010-05-16T10:51:15-07:00'
 
 >>> Gist('d4507e882a07ac6f9f92').public
 False
@@ -34,6 +33,7 @@ u'My .bashrc configuration'
 
 
 import urllib
+from dateutil.parser import parse as dtime
 
 
 try:
@@ -92,6 +92,9 @@ class Gist(object):
             elif key == 'public':
                 # Attach booleans
                 setattr(self, key, value)
+            elif key == 'created_at':
+                # Attach datetime
+                setattr(self, key, dtime(value))
 
             else:
                 # Attach properties to object
@@ -129,8 +132,3 @@ class Gists(object):
         # Return a list of Gist objects
         return [Gist(json=g) for g in json.load(urllib.urlopen(_url))['gists']]
 
-
-if __name__ == '__main__':
-    import doctest
-    
-    doctest.testmod()
