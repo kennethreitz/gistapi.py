@@ -22,6 +22,7 @@ Example Usage
 
     Gists.fetch_by_user('kennethreitz')[-1].description    # 'My .bashrc configuration'
 
+
 Installation
 ------------
 
