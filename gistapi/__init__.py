@@ -3,5 +3,6 @@
 from gistapi import *
 
 __author__ = 'Kenneth Reitz'
-__version__ = '.'.join(('0', '1', '3'))
+__version__ = '0.1.4'
+__build__ = 0x000104
 __license__ = 'MIT'
