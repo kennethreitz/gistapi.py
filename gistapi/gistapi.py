@@ -32,9 +32,7 @@ False
 'My .bashrc configuration'
 """
 
-
 import urllib
-
 
 try:
     import simplejson as json
@@ -42,6 +40,9 @@ except ImportError:
     import json
 
 __all__ = ['Gist', 'Gists']
+
+GIST_BASE = 'http://gist.github.com/%s'
+GIST_JSON = GIST_BASE % 'api/v1/json/%s'
 
 
 class Gist(object):
@@ -54,6 +55,10 @@ class Gist(object):
         # Map given repo id to gist id if none exists
         if self._json:
             self.id = json['repo']
+
+        self.url = url = GIST_BASE % self.id
+        self.embed_url = url + '.js'
+        self.json_url = url + '.json'
 
     def __getattribute__(self, name):
         """Gets attributes, but only if needed"""
@@ -74,12 +79,8 @@ class Gist(object):
             setattr(self, 'id', _meta['repo'])
         else:
             # Fetch Gist metadata
-            _meta_url = 'http://gist.github.com/api/v1/json/{0}'.format(self.id)
-            _meta = json.load(urllib.urlopen(_meta_url))['gists'][0]
-
-        self.url = 'http://github.com/{0}'.format(self.id)
-        self.embed_url = 'http://github.com/{0}.js'.format(self.id)
-        self.json_url = 'http://github.com/{0}.json'.format(self.id)
+            _meta_url = GIST_JSON % self.id
+            _meta = json.load(urllib2.urlopen(_meta_url))['gists'][0]
 
         for key, value in _meta.iteritems():
 
@@ -99,8 +100,8 @@ class Gist(object):
 
         for fn in self.filenames:
             # Grab file contents
-            _file_url = 'http://gist.github.com/raw/{0}/{1}'.format(self.id, fn)
-            _files[fn] = (urllib.urlopen(_file_url).read())
+            _file_url = GIST_BASE % 'raw/%s/%s' % (self.id, fn)
+            _files[fn] = urllib2.urlopen(_file_url).read()
 
         return _files
 
@@ -117,7 +118,7 @@ class Gists(object):
     def fetch_by_user(name):
         """Returns a set of public Gist objects owned by the given GitHub username"""
 
-        _url = 'http://gist.github.com/api/v1/json/gists/{0}'.format(name)
+        _url = GIST_JSON % 'gists/%s' % name
 
         # Return a list of Gist objects
         return [Gist(json=g) for g in json.load(urllib.urlopen(_url))['gists']]
