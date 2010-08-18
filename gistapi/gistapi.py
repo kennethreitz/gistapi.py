@@ -97,7 +97,10 @@ class Gist(object):
     @property
     def files(self):
         """Fetches a gists files and stores them in the 'files' property"""
-        _files = {}
+        try:
+            return self._files
+        except AttributeError:
+            self._files = _files = {}
 
         for fn in self.filenames:
             # Grab file contents
