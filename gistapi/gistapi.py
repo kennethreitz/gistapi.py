@@ -64,7 +64,8 @@ class Gist(object):
         """Gets attributes, but only if needed"""
 
         # Only make external API calls if needed
-        if name in ['owner', 'description', 'created_at', 'public', 'files', 'filenames', 'repo']:
+        if name in ('owner', 'description', 'created_at', 'public',
+                    'files', 'filenames', 'repo'):
             if not hasattr(self, '_meta'):
                 self._meta = self._get_meta()
 
@@ -116,7 +117,8 @@ class Gists(object):
 
     @staticmethod
     def fetch_by_user(name):
-        """Returns a set of public Gist objects owned by the given GitHub username"""
+        """Returns a list of public Gist objects owned by
+        the given GitHub username"""
 
         _url = GIST_JSON % 'gists/%s' % name
 
@@ -128,5 +130,5 @@ if __name__ == '__main__':
     import doctest
     print('hello')
     a = 'bob'
-    
+
     doctest.testmod()
