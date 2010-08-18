@@ -188,10 +188,10 @@ class Gist(object):
         except AttributeError:
             self._files = _files = {}
 
-        for fn in self._meta.files:
+        for fn in self._meta['files']:
             # Grab file contents
             _file_url = GIST_BASE % 'raw/%s/%s' % (self.id, fn)
-            _files[fn] = urllib2.urlopen(_file_url).read()
+            _files[fn] = unicode(urllib2.urlopen(_file_url).read())
 
         return _files
 
