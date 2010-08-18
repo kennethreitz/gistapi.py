@@ -1,2 +1,8 @@
-*.pyc
-dist
+.*.swp
+tags
+.swo
+.DS_Store
+.*.pyc
+*.scratch.*
+.svn
+.idea
