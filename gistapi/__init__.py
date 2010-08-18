@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 """
 GistAPI.py -- A Python wrapper for GitHub's Gist API
