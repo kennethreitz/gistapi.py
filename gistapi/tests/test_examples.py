@@ -5,4 +5,4 @@ import doctest
 import gistapi
 
 # run doctests
-doctest.testmod(gistapi)
+doctest.testmod(gistapi.core)
