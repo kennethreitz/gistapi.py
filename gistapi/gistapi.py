@@ -70,7 +70,7 @@ class Gist(object):
         self.post_url = GIST_BASE % 'gists/%s' % self.id
 
     def __getattribute__(self, name):
-        """Gets attributes, but only if needed"""
+        """Get attributes, but only if needed."""
 
         # Only make external API calls if needed
         if name in ('owner', 'description', 'created_at', 'public',
@@ -81,7 +81,7 @@ class Gist(object):
         return object.__getattribute__(self, name)
 
     def _get_meta(self):
-        """Fetches Gist metadata"""
+        """Fetch Gist metadata."""
 
         # Use json data provided if available
         if self._json:
@@ -178,7 +178,7 @@ class Gist(object):
 
     @property
     def files(self):
-        """Fetches a gists files and stores them in the 'files' property"""
+        """Fetch Gist's files and store them in the 'files' property."""
         try:
             return self._files
         except AttributeError:
@@ -202,7 +202,7 @@ class Gists(object):
 
     @staticmethod
     def fetch_by_user(name):
-        """Returns a list of public Gist objects owned by
+        """Return a list of public Gist objects owned by
         the given GitHub username"""
 
         _url = GIST_JSON % 'gists/%s' % name
