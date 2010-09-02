@@ -24,15 +24,13 @@ False
 >>> Gist('d4507e882a07ac6f9f92').filenames
 ['exampleEmptyFile', 'exampleFile']
 
->>> Gist('d4507e882a07ac6f9f92').files
-{'exampleFile': u'Example file content.', 'exampleEmptyFile': u''}
-
 >>> Gists.fetch_by_user('kennethreitz')[-1].description
 u'My .bashrc configuration'
 """
 
+import cStringIO
 import os.path
-import urllib
+
 import urllib2
 from dateutil.parser import parse as dtime
 
@@ -191,7 +189,9 @@ class Gist(object):
         for fn in self._meta['files']:
             # Grab file contents
             _file_url = GIST_BASE % 'raw/%s/%s' % (self.id, fn)
-            _files[fn] = unicode(urllib2.urlopen(_file_url).read())
+#            _files[fn] = unicode(urllib2.urlopen(_file_url).read())
+            _files[fn] = cStringIO.StringIO()
+            _files[fn].write(urllib2.urlopen(_file_url).read())
 
         return _files
 
