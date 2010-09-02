@@ -1,6 +1,12 @@
 History
 =======
 
+0.2.1 (2010-09-01)
+------------------
+* StringIO support for Files
+* Added Install Requirements for Pip
+
+
 0.2.0 (2010-08-28)
 ------------------
 * Support for Add, Rename, Modify, and Delete of Files!

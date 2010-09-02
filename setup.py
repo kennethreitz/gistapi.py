@@ -9,6 +9,7 @@ from distutils.core import setup
 
 
 def publish():
+
     """Publish to PyPi"""
     os.system("python setup.py sdist upload")
 
@@ -25,6 +26,7 @@ setup(name='gistapi',
       author_email='me@kennethreitz.com',
       url='http://github.com/kennethreitz/gistapi.py',
       packages=['gistapi'],
+      install_requires=['python-dateutil', 'simplejson'],
       license='MIT',
       classifiers=(
         "Development Status :: 4 - Beta",
