@@ -1,6 +1,11 @@
 History
 =======
 
+0.2.2 (2011-01-10)
+------------------
+* Updated filename handling for special filenames
+
+
 0.2.1 (2010-09-01)
 ------------------
 * StringIO support for Files
