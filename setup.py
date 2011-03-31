@@ -16,6 +16,11 @@ def publish():
 if sys.argv[-1] == "publish":
     publish()
     sys.exit()
+    
+required = []
+
+if sys.version_info[:2] < (2,6):
+    required.append('simplejson')
 
 setup(name='gistapi',
       version=gistapi.__version__,
@@ -26,7 +31,7 @@ setup(name='gistapi',
       author_email='me@kennethreitz.com',
       url='http://github.com/kennethreitz/gistapi.py',
       packages=['gistapi'],
-      install_requires=['python-dateutil', 'simplejson'],
+      install_requires=required,
       license='MIT',
       classifiers=(
         "Development Status :: 4 - Beta",

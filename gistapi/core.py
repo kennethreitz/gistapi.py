@@ -2,7 +2,7 @@
 
 """
 GistAPI.py -- A Python wrapper for GitHub's Gist API
-(c) 2010 Kenneth Reitz. MIT License.
+(c) 2011 Kenneth Reitz. MIT License.
 
 Example usage:
 
@@ -26,13 +26,17 @@ False
 
 >>> Gists.fetch_by_user('kennethreitz')[-1].description
 u'My .bashrc configuration'
+
+>>> Gist(885658).comments[0].body
+u'Great Stuff.'
 """
+
 
 import cStringIO
 import os.path
 
 import urllib2
-from dateutil.parser import parse as dtime
+from datetime import datetime
 
 try:
     import simplejson as json
@@ -67,13 +71,17 @@ class Gist(object):
         self.epic_embed_url = url + '.pibb'
         self.json_url = url + '.json'
         self.post_url = GIST_BASE % 'gists/%s' % self.id
+        self.comments  = []
+    
+    def __repr__(self):
+        return '<gist %s>' % self.id
 
     def __getattribute__(self, name):
         """Get attributes, but only if needed."""
 
         # Only make external API calls if needed
         if name in ('owner', 'description', 'created_at', 'public',
-                    'files', 'filenames', 'repo'):
+                    'files', 'filenames', 'repo', 'comments'):
             if not hasattr(self, '_meta'):
                 self._meta = self._get_meta()
 
@@ -103,7 +111,14 @@ class Gist(object):
                 setattr(self, key, value)
             elif key == 'created_at':
                 # Attach datetime
-                setattr(self, key, dtime(value))
+                datetime.strptime(value[:-6], '%Y/%m/%d %H:%M:%S')
+                
+            elif key == 'comments':
+                _comments = []
+                for comment in value:
+                    c = GistComment().from_api(comment)
+                    _comments.append(c)
+                    setattr(self, 'comments', _comments)
             else:
                 # Attach properties to object
                 setattr(self, key, unicode(value))
@@ -214,3 +229,33 @@ class Gists(object):
         # Return a list of Gist objects
         return [Gist(json=g)
                 for g in json.load(urllib2.urlopen(_url))['gists']]
+
+
+class GistComment(object):
+    """Gist comments."""
+    
+    def __init__(self): 
+        self.body = None
+        self.created_at = None
+        self.gravatar_id = None
+        self.id = None
+        self.updated_at = None
+        self.user = None
+
+    def __repr__(self):
+        return '<gist-comment %s>' % self.id
+
+    @staticmethod
+    def from_api(jsondict):
+        """Returns new instance of GistComment containing given api dict."""
+        comment = GistComment()
+        
+        comment.body = jsondict.get('body', None)
+        comment.created_at = datetime.strptime(jsondict.get('created_at')[:-6], '%Y/%m/%d %H:%M:%S')
+        comment.gravatar_id = jsondict.get('gravatar_id', None)
+        comment.id = jsondict.get('id', None)
+        comment.updated_at = datetime.strptime(jsondict.get('updated_at')[:-6], '%Y/%m/%d %H:%M:%S')
+        comment.user = jsondict.get('user', None)
+        
+        return comment
+        
