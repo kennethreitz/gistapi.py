@@ -3,7 +3,6 @@
 
 import os
 import sys
-import gistapi
 
 from distutils.core import setup
 
