@@ -111,7 +111,7 @@ class Gist(object):
                 setattr(self, key, value)
             elif key == 'created_at':
                 # Attach datetime
-                datetime.strptime(value[:-6], '%Y/%m/%d %H:%M:%S')
+                setattr(self, 'created_at', datetime.strptime(value[:-6], '%Y/%m/%d %H:%M:%S'))
                 
             elif key == 'comments':
                 _comments = []
