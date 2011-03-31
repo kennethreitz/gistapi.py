@@ -26,6 +26,9 @@ False
 
 >>> Gists.fetch_by_user('kennethreitz')[-1].description
 u'My .bashrc configuration'
+
+>>> Gist(885658).comments[0].body
+u'Great Stuff.'
 """
 
 import cStringIO
