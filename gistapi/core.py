@@ -35,7 +35,7 @@ u'Great Stuff.'
 import cStringIO
 import os.path
 
-import urllib2
+import requests
 from datetime import datetime
 
 try:
@@ -97,7 +97,7 @@ class Gist(object):
         else:
             # Fetch Gist metadata
             _meta_url = GIST_JSON % self.id
-            _meta = json.load(urllib2.urlopen(_meta_url))['gists'][0]
+            _meta = json.loads(requests.get(_meta_url).content)['gists'][0]
 
         for key, value in _meta.iteritems():
 
