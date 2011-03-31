@@ -35,7 +35,7 @@ u'Great Stuff.'
 import cStringIO
 import os.path
 
-import urllib2
+import requests
 from datetime import datetime
 
 try:
@@ -97,7 +97,7 @@ class Gist(object):
         else:
             # Fetch Gist metadata
             _meta_url = GIST_JSON % self.id
-            _meta = json.load(urllib2.urlopen(_meta_url))['gists'][0]
+            _meta = json.loads(requests.get(_meta_url).content)['gists'][0]
 
         for key, value in _meta.iteritems():
 
@@ -111,7 +111,7 @@ class Gist(object):
                 setattr(self, key, value)
             elif key == 'created_at':
                 # Attach datetime
-                datetime.strptime(value[:-6], '%Y/%m/%d %H:%M:%S')
+                setattr(self, 'created_at', datetime.strptime(value[:-6], '%Y/%m/%d %H:%M:%S'))
                 
             elif key == 'comments':
                 _comments = []
@@ -127,14 +127,9 @@ class Gist(object):
 
     def _post(self, params, headers={}):
         """POST to the web form (internal method)."""
-        request = urllib2.Request(self.post_url,
-                                  urllib.urlencode(params),
-                                  headers)
-        try:
-            response = urllib2.urlopen(request)
-        except IOError, exc:
-            response = exc
-        return response.code, response.msg
+        r = requests.post(self.post_url, params, headers=headers)
+
+        return r.status_code, r.content
 
     def reset(self):
         """Clear the local cache."""
@@ -204,9 +199,8 @@ class Gist(object):
         for fn in self._meta['files']:
             # Grab file contents
             _file_url = GIST_BASE % 'raw/%s/%s' % (self.id, urllib2.quote(fn))
-#            _files[fn] = unicode(urllib2.urlopen(_file_url).read())
             _files[fn] = cStringIO.StringIO()
-            _files[fn].write(urllib2.urlopen(_file_url).read())
+            _files[fn].write(requests.get(_file_url).content)
 
         return _files
 
@@ -228,7 +222,7 @@ class Gists(object):
 
         # Return a list of Gist objects
         return [Gist(json=g)
-                for g in json.load(urllib2.urlopen(_url))['gists']]
+                for g in json.loads(requests.get(_url).content)['gists']]
 
 
 class GistComment(object):
