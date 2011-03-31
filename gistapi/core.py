@@ -36,6 +36,7 @@ import cStringIO
 import os.path
 
 import requests
+import urllib2
 from datetime import datetime
 
 try:
