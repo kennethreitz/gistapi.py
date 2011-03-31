@@ -27,7 +27,7 @@ if sys.version_info[:2] < (2,6):
 
 setup(
     name='gistapi',
-    version=gistapi.__version__,
+    version='0.2.3',
     description='Python wrapper for Gist API',
     long_description=open('README.rst').read() + '\n\n' + open('HISTORY.rst').read(),
     author='Kenneth Reitz',
