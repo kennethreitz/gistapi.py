@@ -2,7 +2,7 @@
 
 """
 GistAPI.py -- A Python wrapper for GitHub's Gist API
-(c) 2010 Kenneth Reitz. MIT License.
+(c) 2011 Kenneth Reitz. MIT License.
 
 Example usage:
 
@@ -30,6 +30,7 @@ u'My .bashrc configuration'
 >>> Gist(885658).comments[0].body
 u'Great Stuff.'
 """
+
 
 import cStringIO
 import os.path
@@ -258,10 +259,3 @@ class GistComment(object):
         
         return comment
         
-        
-        
-        
-        
-        
-    
-    
