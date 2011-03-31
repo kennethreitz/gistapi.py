@@ -222,7 +222,7 @@ class Gists(object):
 
         # Return a list of Gist objects
         return [Gist(json=g)
-                for g in json.load(requests.get(_url).content)['gists']]
+                for g in json.loads(requests.get(_url).content)['gists']]
 
 
 class GistComment(object):
