@@ -10,6 +10,6 @@ from core import *
 
 
 __author__ = 'Kenneth Reitz'
-__version__ = '0.2.3'
-__build__ = 0x000203
+__version__ = '0.2.4'
+__build__ = 0x000204
 __license__ = 'MIT'

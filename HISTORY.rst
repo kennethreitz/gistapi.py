@@ -1,9 +1,17 @@
 History
 =======
 
+0.2.4 (2011-03-31)
+------------------
+* Bugfixes
+* Rely on Requests
+* Unittests
+* http://ci.kennethreitz.com/job/gistapi-tests/
+
 0.2.3 (2011-03-31)
 ------------------
 * Added Gist Comments support
+
 
 0.2.2 (2011-01-10)
 ------------------
