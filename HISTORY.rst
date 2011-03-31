@@ -1,6 +1,10 @@
 History
 =======
 
+0.2.3 (2011-03-31)
+------------------
+* Added Gist Comments support
+
 0.2.2 (2011-01-10)
 ------------------
 * Updated filename handling for special filenames
