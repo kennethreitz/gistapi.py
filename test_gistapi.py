@@ -63,7 +63,7 @@ class RequestsTestSuite(unittest.TestCase):
     
     def test_fetch_gists(self):
         actual = self.api.fetch_gists()
-        self.assertEqual(actual is not None, True)
+        self.assertEqual(len(actual) > 0, True)
 
     def _create_dummy_gist(self):
         files = {

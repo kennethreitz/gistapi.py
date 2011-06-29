@@ -55,7 +55,6 @@ GIST_BASE = 'http://gist.github.com/%s'
 GIST_JSON = GIST_BASE % 'api/v1/json/%s'
 API_BASE = 'https://api.github.com/gists%s'
 
-
 class Gist(object):
     """Gist Object"""
 
@@ -74,7 +73,6 @@ class Gist(object):
         self.epic_embed_url = url + '.pibb'
         self.json_url = url + '.json'
         self.post_url = GIST_BASE % 'gists/%s' % self.id
-        self.comments  = []
     
     def __repr__(self):
         return '<gist %s>' % self.id
@@ -84,7 +82,7 @@ class Gist(object):
 
         # Only make external API calls if needed
         if name in ('owner', 'description', 'created_at', 'public',
-                    'files', 'filenames', 'repo', 'comments'):
+                    'files', 'filenames', 'repo', 'comments', 'git_pull_url', 'git_push_url', 'forks', 'histories'):
             if not hasattr(self, '_meta'):
                 self._meta = self._get_meta()
 
@@ -96,7 +94,7 @@ class Gist(object):
         # Use json data provided if available
         if self._json:
             _meta = self._json
-            setattr(self, 'id', _meta['repo'])
+            setattr(self, 'id', _meta['repo'] if _meta.has_key('repo') else _meta['id'])
         else:
             # Fetch Gist metadata
             _meta_url = GIST_JSON % self.id
@@ -114,14 +112,13 @@ class Gist(object):
                 setattr(self, key, value)
             elif key == 'created_at':
                 # Attach datetime
-                setattr(self, 'created_at', datetime.strptime(value[:-6], '%Y/%m/%d %H:%M:%S'))
-                
-            elif key == 'comments':
-                _comments = []
-                for comment in value:
-                    c = GistComment().from_api(comment)
-                    _comments.append(c)
-                    setattr(self, 'comments', _comments)
+                setattr(self, 'created_at', iso8601.parse_date(value))
+            elif key == 'forks':
+                forks = [GistFork.from_api(f) for f in value]
+                setattr(self, 'forks', forks)
+            elif key == 'history':
+                histories = [GistHistory.from_api(h) for h in value]
+                setattr(self, 'histories', histories)
             else:
                 # Attach properties to object
                 setattr(self, key, unicode(value))
@@ -130,7 +127,7 @@ class Gist(object):
 
     def _post(self, params, headers={}):
         """POST to the web form (internal method)."""
-        r = requests.post(self.post_url, params, headers=headers)
+        r = requests.post(self.post_url, params, headers=self._)
 
         return r.status_code, r.content
 
@@ -240,8 +237,7 @@ class Gists(object):
                 _url = API_BASE % '/starred'
             
             return [Gist(json=g)
-                for g in json.loads(requests.get(_url, self._params(options), self._headers()).content)
-                if g is not None]
+                for g in json.loads(requests.get(_url, self._params(options), self._headers()).content)]
         else:
             return []
     
@@ -371,7 +367,6 @@ class Gists(object):
             'authorization': 'token ' + self._token or TOKEN
         }, **headers or {})
         
-
 class GistComment(object):
     """Gist comments."""
     
@@ -400,3 +395,50 @@ class GistComment(object):
         
         return comment
         
+class GistFork(object):
+    """Gist forks"""
+    
+    def __init__(self): 
+        self.user = None
+        self.url = None
+        self.created_at = None
+
+    def __repr__(self):
+        return '<gist-fork %s>' % self.url
+    
+    @staticmethod
+    def from_api(jsondict):
+        """Returns new instance of GistFork containing given api dict."""
+        fork = GistFork()
+        
+        fork.user = jsondict.get('user', None)
+        fork.url = jsondict.get('url', None)
+        fork.created_at = iso8601.parse_date(jsondict.get('created_at'))
+        
+        return fork
+    
+class GistHistory(object):
+    """Gist histories"""
+    
+    def __init__(self): 
+        self.url = None
+        self.version = None
+        self.user = None
+        self.change_status = None
+        self.commited_at = None
+        
+    def __repr__(self):
+        return '<gist-history %s>' % self.url
+        
+    @staticmethod
+    def from_api(jsondict):
+        """Returns new instance of GistFork containing given api dict."""
+        fork = GistHistory()
+        
+        fork.url = jsondict.get('url', None)
+        fork.version = jsondict.get('version', None)
+        fork.user = jsondict.get('user', None)
+        fork.change_status = jsondict.get('change_status', None)
+        fork.committed_at = iso8601.parse_date(jsondict.get('committed_at'))
+        
+        return fork
