@@ -38,6 +38,7 @@ import os.path
 import requests
 import urllib2
 from datetime import datetime
+import iso8601
 
 try:
     import simplejson as json
@@ -52,6 +53,7 @@ TOKEN = 'YOUR GITHUB TOKEN'
 
 GIST_BASE = 'http://gist.github.com/%s'
 GIST_JSON = GIST_BASE % 'api/v1/json/%s'
+API_BASE = 'https://api.github.com/gists%s'
 
 
 class Gist(object):
@@ -65,7 +67,7 @@ class Gist(object):
 
         # Map given repo id to gist id if none exists
         if self._json:
-            self.id = json['repo']
+            self.id = json['repo'] if json.has_key('repo') else json['id']
 
         self.url = url = GIST_BASE % self.id
         self.embed_url = url + '.js'
@@ -225,6 +227,150 @@ class Gists(object):
         return [Gist(json=g)
                 for g in json.loads(requests.get(_url).content)['gists']]
 
+    def fetch_gists(self, gist_id=None, options=None, public=False, starred=False):
+        """Return a list of Gists. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % ''
+            if gist_id:
+                _url = API_BASE % '/' + gist_id
+                return Gist( json = json.loads(requests.get(_url, self._params(options)).content) )
+            elif public:
+                _url = API_BASE % '/public'
+            elif starred:
+                _url = API_BASE % '/starred'
+            
+            return [Gist(json=g)
+                for g in json.loads(requests.get(_url, self._params(options), self._headers()).content)
+                if g is not None]
+        else:
+            return []
+    
+    def create_gist(self, files, description=None, public=True):
+        """Create a Gist. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % ''
+            options = {
+                        'files': files,
+                        'public': public
+                       }
+            if description is not None: options['description'] = description
+            return requests.post(_url, self._params2json(options), headers=self._headers())
+        else:
+            return None
+
+    def update_gist(self, gist_id, files=None, description=None):
+        """Update a Gist. Required authorication"""
+        if self._check_auth() and files is not None or description is not None:
+            _url = API_BASE % '/' + gist_id
+            options = {}
+            if files is not None: options['files'] = files
+            if description is not None: options['description'] = description
+#            return Gist( json = json.loads(requests.patch(_url, self._params2json(options), headers=self._headers()).content) )
+            return requests.patch(_url, self._params2json(options), headers=self._headers())
+        else:
+            return None
+    
+    def delete_gist(self, gist_id):
+        """Delete a Gist. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id
+            r = requests.delete(_url, headers=self._headers())
+            return r.status_code == 204
+        else:
+            return False
+    
+    def star_gist(self, gist_id):
+        """Star a Gist. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id + '/star'
+            r = requests.put(_url, headers=self._headers())
+            return r.status_code == 204
+        else:
+            return False
+
+    def unstar_gist(self, gist_id):
+        """Unstar a Gist. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id + '/star'
+            r = requests.delete(_url, self._params(), headers=self._headers())
+            return r.status_code == 204
+        else:
+            return False
+
+    def check_starred(self, gist_id):
+        """Check if a Gist is starred. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id + '/star'
+            r = requests.get(_url, self._params(), headers=self._headers())
+            return r.status_code == 204
+        else:
+            return False
+    
+    def fork_gist(self, gist_id):
+        """fork a Gist is starred. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id + '/fork'
+            return Gist( json = json.loads(requests.post(_url, self._params(), headers=self._headers()).content) )
+        else:
+            return None
+    
+    def fetch_comments(self, gist_id=None, comment_id=None, options=None):
+        """Return a list of Gist Comments. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id + 'comments'
+            if comment_id:
+                _url = API_BASE % '/comments/' + comment_id
+                
+            gc = GistComment()
+            return [gc.from_api(c)
+                for c in json.loads(requests.get(_url, self._params(options)).content)]
+        else:
+            return []
+    
+    def create_comment(self, gist_id, body):
+        """Create a Gist Comments. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/' + gist_id + '/comments'
+            return GistComment().from_api( json.loads( requests.post(_url, self._params2json({'body': body}), headers=self._headers()).content ) )
+        else:
+            return None
+    
+    def update_comment(self, comment_id, body):
+        """Update a Gist Comments. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/comments/' + comment_id
+            return GistComment().from_api( json.loads( requests.patch(_url, self._params2json({'body': body}), headers=self._headers()).content ) )
+        else:
+            return None
+    
+    def delete_comment(self, comment_id):
+        """Delete a Gist Comments. Required authorication"""
+        if self._check_auth():
+            _url = API_BASE % '/comments/' + comment_id
+            r = requests.delete(_url, headers=self._headers())
+            return r.status_code == 204
+        else:
+            return False
+    
+    def _check_auth(self):
+        return self._username and self._token
+    
+    def _params(self, params=None):
+        return dict({
+#            '_method': 'get',
+#            'login': self._username or USERNAME,
+#            'access_token': self._token or TOKEN
+        }, **params or {})
+
+    def _params2json(self, params=None):
+        return json.dumps(dict({
+        }, **params or {}))
+
+    def _headers(self, headers=None):
+        return dict({
+            'authorization': 'token ' + self._token or TOKEN
+        }, **headers or {})
+        
 
 class GistComment(object):
     """Gist comments."""
@@ -246,10 +392,10 @@ class GistComment(object):
         comment = GistComment()
         
         comment.body = jsondict.get('body', None)
-        comment.created_at = datetime.strptime(jsondict.get('created_at')[:-6], '%Y/%m/%d %H:%M:%S')
+        comment.created_at = iso8601.parse_date(jsondict.get('created_at'))
         comment.gravatar_id = jsondict.get('gravatar_id', None)
         comment.id = jsondict.get('id', None)
-        comment.updated_at = datetime.strptime(jsondict.get('updated_at')[:-6], '%Y/%m/%d %H:%M:%S')
+        comment.updated_at = iso8601.parse_date(jsondict.get('updated_at'))
         comment.user = jsondict.get('user', None)
         
         return comment
