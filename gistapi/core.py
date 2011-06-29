@@ -232,7 +232,7 @@ class Gists(object):
         if self._check_auth():
             _url = API_BASE % ''
             if gist_id:
-                _url = API_BASE % '/' + gist_id
+                _url = API_BASE % '/' + str(gist_id)
                 return Gist( json = json.loads(requests.get(_url, self._params(options)).content) )
             elif public:
                 _url = API_BASE % '/public'
@@ -254,14 +254,14 @@ class Gists(object):
                         'public': public
                        }
             if description is not None: options['description'] = description
-            return requests.post(_url, self._params2json(options), headers=self._headers())
+            return Gist(json=json.loads(requests.post(_url, self._params2json(options), headers=self._headers()).content))
         else:
             return None
 
     def update_gist(self, gist_id, files=None, description=None):
         """Update a Gist. Required authorication"""
         if self._check_auth() and files is not None or description is not None:
-            _url = API_BASE % '/' + gist_id
+            _url = API_BASE % '/' + str(gist_id)
             options = {}
             if files is not None: options['files'] = files
             if description is not None: options['description'] = description
@@ -273,7 +273,7 @@ class Gists(object):
     def delete_gist(self, gist_id):
         """Delete a Gist. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id
+            _url = API_BASE % '/' + str(gist_id)
             r = requests.delete(_url, headers=self._headers())
             return r.status_code == 204
         else:
@@ -282,7 +282,7 @@ class Gists(object):
     def star_gist(self, gist_id):
         """Star a Gist. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id + '/star'
+            _url = API_BASE % '/' + str(gist_id) + '/star'
             r = requests.put(_url, headers=self._headers())
             return r.status_code == 204
         else:
@@ -291,7 +291,7 @@ class Gists(object):
     def unstar_gist(self, gist_id):
         """Unstar a Gist. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id + '/star'
+            _url = API_BASE % '/' + str(gist_id) + '/star'
             r = requests.delete(_url, self._params(), headers=self._headers())
             return r.status_code == 204
         else:
@@ -300,7 +300,7 @@ class Gists(object):
     def check_starred(self, gist_id):
         """Check if a Gist is starred. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id + '/star'
+            _url = API_BASE % '/' + str(gist_id) + '/star'
             r = requests.get(_url, self._params(), headers=self._headers())
             return r.status_code == 204
         else:
@@ -309,7 +309,7 @@ class Gists(object):
     def fork_gist(self, gist_id):
         """fork a Gist is starred. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id + '/fork'
+            _url = API_BASE % '/' + str(gist_id) + '/fork'
             return Gist( json = json.loads(requests.post(_url, self._params(), headers=self._headers()).content) )
         else:
             return None
@@ -317,9 +317,9 @@ class Gists(object):
     def fetch_comments(self, gist_id=None, comment_id=None, options=None):
         """Return a list of Gist Comments. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id + 'comments'
+            _url = API_BASE % '/' + str(gist_id) + 'comments'
             if comment_id:
-                _url = API_BASE % '/comments/' + comment_id
+                _url = API_BASE % '/comments/' + str(comment_id)
                 
             gc = GistComment()
             return [gc.from_api(c)
@@ -330,7 +330,7 @@ class Gists(object):
     def create_comment(self, gist_id, body):
         """Create a Gist Comments. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/' + gist_id + '/comments'
+            _url = API_BASE % '/' + str(gist_id) + '/comments'
             return GistComment().from_api( json.loads( requests.post(_url, self._params2json({'body': body}), headers=self._headers()).content ) )
         else:
             return None
@@ -338,7 +338,7 @@ class Gists(object):
     def update_comment(self, comment_id, body):
         """Update a Gist Comments. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/comments/' + comment_id
+            _url = API_BASE % '/comments/' + str(comment_id)
             return GistComment().from_api( json.loads( requests.patch(_url, self._params2json({'body': body}), headers=self._headers()).content ) )
         else:
             return None
@@ -346,7 +346,7 @@ class Gists(object):
     def delete_comment(self, comment_id):
         """Delete a Gist Comments. Required authorication"""
         if self._check_auth():
-            _url = API_BASE % '/comments/' + comment_id
+            _url = API_BASE % '/comments/' + str(comment_id)
             r = requests.delete(_url, headers=self._headers())
             return r.status_code == 204
         else:
