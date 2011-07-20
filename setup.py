@@ -17,7 +17,7 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
     
-required = ['requests']
+required = ['requests', 'iso8601']
 
 
 if sys.version_info[:2] < (2,6):
