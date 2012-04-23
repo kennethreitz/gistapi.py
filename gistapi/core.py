@@ -50,28 +50,34 @@ __all__ = ['Gist', 'Gists']
 USERNAME = 'YOUR GITHUB USERNAME'
 TOKEN = 'YOUR GITHUB TOKEN'
 
-GIST_BASE = 'http://gist.github.com/%s'
-GIST_JSON = GIST_BASE % 'api/v1/json/%s'
+DEFAULT_GIST_BASE = 'http://gist.github.com/'
+GIST_JSON = 'api/v1/json/'
 
 
 class Gist(object):
     """Gist Object"""
 
-    def __init__(self, id=None, json=None, username=None, token=None):
+    def __init__(self, id=None, json=None, username=None, token=None, gist_base=None, always_pass_token=False):
         self.id = id
         self._json = json
         self._username = username
         self._token = token
+        if gist_base:
+            self.gist_base = gist_base
+        else:
+            self.gist_base = DEFAULT_GIST_BASE
+        self.gist_json = self.gist_base + GIST_JSON
+        self.always_pass_token = always_pass_token
 
         # Map given repo id to gist id if none exists
         if self._json:
             self.id = json['repo']
 
-        self.url = url = GIST_BASE % self.id
+        self.url = url = self.gist_base + str(self.id)
         self.embed_url = url + '.js'
         self.epic_embed_url = url + '.pibb'
         self.json_url = url + '.json'
-        self.post_url = GIST_BASE % 'gists/%s' % self.id
+        self.post_url = self.gist_base + 'gists/%s' % self.id
         self.comments  = []
     
     def __repr__(self):
@@ -97,8 +103,17 @@ class Gist(object):
             setattr(self, 'id', _meta['repo'])
         else:
             # Fetch Gist metadata
-            _meta_url = GIST_JSON % self.id
-            _meta = json.loads(requests.get(_meta_url).content)['gists'][0]
+            _meta_url = self.gist_json + str(self.id)
+            if self.always_pass_token:
+                params = {
+                    '_method': 'post',
+                    'login': self._username or USERNAME,
+                    'token': self._token or TOKEN,
+                }
+                response = requests.post(_meta_url, params)
+                _meta = json.loads(response.content)['gists'][0]
+            else:
+                _meta = json.loads(requests.get(_meta_url).content)['gists'][0]
 
         for key, value in _meta.iteritems():
 
@@ -199,7 +214,7 @@ class Gist(object):
 
         for fn in self._meta['files']:
             # Grab file contents
-            _file_url = GIST_BASE % 'raw/%s/%s' % (self.id, urllib2.quote(fn))
+            _file_url = self.gist_base + 'raw/%s/%s' % (self.id, urllib2.quote(fn))
             _files[fn] = cStringIO.StringIO()
             _files[fn].write(requests.get(_file_url).content)
 
@@ -215,15 +230,27 @@ class Gists(object):
         self._token = token
 
     @staticmethod
-    def fetch_by_user(name):
+    def fetch_by_user(name, gist_base=None, always_pass_token=False):
         """Return a list of public Gist objects owned by
         the given GitHub username."""
 
-        _url = GIST_JSON % 'gists/%s' % name
+        _url = DEFAULT_GIST_BASE + GIST_JSON + 'gists/%s' % name
+        if gist_base:
+            _url = gist_base + GIST_JSON + 'gists/%s' % name
 
         # Return a list of Gist objects
-        return [Gist(json=g)
-                for g in json.loads(requests.get(_url).content)['gists']]
+        if always_pass_token:
+            params = {
+                '_method': 'post',
+                'login': USERNAME,
+                'token': TOKEN,
+            }
+            response = requests.post(_url, params)
+            return [Gist(json=g)
+                    for g in json.loads(response.content)['gists']]
+        else:
+            return [Gist(json=g)
+                    for g in json.loads(requests.get(_url).content)['gists']]
 
 
 class GistComment(object):
